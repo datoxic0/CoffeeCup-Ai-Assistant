@@ -1,0 +1,55 @@
+{
+  "universal": {
+    "qualityPolicy": "zeroWarningsZeroErrors",
+    "onFail": "regenerateAndRetry",
+    "maxRetries": 5,
+    "preventCommitOnError": true,
+    "enforceTests": true,
+    "reportTools": ["SonarQube", "CodeQL", "gitleaks"]
+  },
+  "languages": {
+    "python": {
+      "formatter": ["black"],
+      "linters": ["ruff", "pylance"],
+      "imports": ["isort"],
+      "typeCheckers": ["mypy"],
+      "security": ["bandit"],
+      "tests": ["pytest"]
+    },
+    "javascript": {
+      "formatter": ["prettier"],
+      "linters": ["eslint"],
+      "typeCheckers": ["tsc"],
+      "preCommit": ["husky"],
+      "tests": ["jest"]
+    },
+    "htmlCss": {
+      "formatter": ["prettier"],
+      "linters": ["stylelint", "htmlhint"],
+      "accessibility": ["axe-core"]
+    },
+    "swift": {
+      "formatter": ["swiftformat"],
+      "linters": ["swiftlint"],
+      "staticAnalysis": ["clang", "danger"],
+      "tests": ["xctest"]
+    },
+    "java": {
+      "linters": ["checkstyle"],
+      "bugDetectors": ["spotbugs"],
+      "staticAnalysis": ["sonarqube"],
+      "tests": ["junit5"]
+    },
+    "cpp": {
+      "linters": ["clang-tidy"],
+      "staticAnalysis": ["cppcheck", "codechecker"],
+      "buildChecks": ["cmake-lint"],
+      "tests": ["googletest"]
+    },
+    "ruby": {
+      "linters": ["rubocop"],
+      "formatters": ["standardrb"],
+      "tests": ["rspec"]
+    }
+  }
+}
