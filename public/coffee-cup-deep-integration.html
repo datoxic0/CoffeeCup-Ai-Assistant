@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoffeeCup Deep AI Integration - Console Style</title>
+    <style>
+        :root {
+            --bg: #0b1020;
+            --surface: #141a2a;
+            --card: #1b2140;
+            --text: #e9eeff;
+            --muted: #a6adbb;
+            --border: #2a3150;
+            --primary: #4f8cff;
+            --primary-hover: #3a7be0;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --shadow: 0 12px 28px rgba(0,0,0,.32);
+            --radius: 14px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0b0f1a 0%, #0a1220 100%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 24px;
+            height: calc(100vh - 40px);
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background: linear-gradient(180deg, rgba(22,26,48,.98), rgba(20,24,40,.96));
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(135deg, rgba(79,140,255,.15), rgba(79,140,255,.05));
+            border-radius: var(--radius) 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header h1::before {
+            content: "☕";
+            font-size: 20px;
+        }
+
+        .badge {
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: rgba(79,140,255,.2);
+            border: 1px solid rgba(79,140,255,.3);
+        }
+
+        .section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+            padding: 8px 0;
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        select, input, textarea {
+            width: 100%;
+            background: rgba(1,16,32,0.7);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(79,140,255,0.2);
+        }
+
+        textarea {
+            min-height: 200px;
+            resize: vertical;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            line-height: 1.5;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 16px 0;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-hover);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: #218838;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: #c82333;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: #212529;
+        }
+
+        .btn-warning:hover:not(:disabled) {
+            background: #e0a800;
+        }
+
+        .console-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .console-output {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: calc(100vh - 200px);
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .console-line {
+            white-space: pre-wrap;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .console-prompt {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .console-command {
+            color: var(--text);
+        }
+
+        .console-response {
+            color: var(--success);
+        }
+
+        .console-error {
+            color: var(--danger);
+        }
+
+        .console-input {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            border-top: 1px solid var(--border);
+            background: rgba(10,12,25,.9);
+        }
+
+        .console-input span {
+            color: var(--primary);
+            font-weight: bold;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+        }
+
+        .console-input input {
+            flex: 1;
+            min-height: 40px;
+            resize: vertical;
+            background: rgba(1,16,32,0.7);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .console-input input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(79,140,255,0.2);
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0;
+            font-size: 13px;
+        }
+
+        .status-indicator.success {
+            background: rgba(40,167,69,0.1);
+            border: 1px solid rgba(40,167,69,0.3);
+            color: #28a745;
+        }
+
+        .status-indicator.error {
+            background: rgba(220,53,69,0.1);
+            border: 1px solid rgba(220,53,69,0.3);
+            color: #dc3545;
+        }
+
+        .status-indicator.loading {
+            background: rgba(79,140,255,0.1);
+            border: 1px solid rgba(79,140,255,0.3);
+            color: var(--primary);
+        }
+
+        .status-indicator::before {
+            content: "●";
+            font-size: 16px;
+        }
+
+        .status-indicator.success::before {
+            color: #28a745;
+        }
+
+        .status-indicator.error::before {
+            color: #dc3545;
+        }
+
+        .status-indicator.loading::before {
+            color: var(--primary);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .instructions {
+            background: rgba(79,140,255,0.1);
+            border: 1px solid rgba(79,140,255,0.2);
+            border-radius: 10px;
+            padding: 16px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .instructions ol {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+
+        .model-info {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+                height: auto;
+                gap: 20px;
+            }
+            
+            .main-content, .sidebar {
+                height: auto;
+            }
+            
+            .console-line {
+                max-width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-content">
+            <div class="card">
+                <div class="header">
+                    <h1>CoffeeCup Deep AI Integration</h1>
+                    <div class="badge">Console Style</div>
+                </div>
+
+                <div class="console-container">
+                    <div class="console-output" id="consoleOutput">
+                        <div class="console-line">
+                            <span class="console-prompt">CoffeeCup-AI-Assistant$</span>
+                            <span class="console-command"> Welcome to CoffeeCup Deep AI Integration Console!</span>
+                        </div>
+                        <div class="console-line">
+                            <span class="console-response">Connected to AI Assistant server at http://localhost:3690</span>
+                        </div>
+                        <div class="console-line">
+                            <span class="console-response">Available models: gemma3, deepseek-r1, qwen2.5-coder</span>
+                        </div>
+                        <div class="console-line">
+                            <span class="console-prompt">CoffeeCup-AI-Assistant$</span>
+                            <span class="console-command"> Type 'help' for available commands</span>
+                        </div>
+                    </div>
+
+                    <div class="console-input">
+                        <span>CoffeeCup-AI-Assistant$</span>
+                        <input 
+                            type="text" 
+                            id="consoleInput" 
+                            placeholder="Type command (e.g., 'suggest', 'explain', 'apply', 'help')"
+                            autocomplete="off">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="card">
+                <div class="header">
+                    <h1>Configuration</h1>
+                    <div class="badge">Settings</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="backendSelector">Backend Service</label>
+                    <select id="backendSelector">
+                        <option value="ollama">Ollama (Local Models)</option>
+                        <option value="openrouter">OpenRouter (Cloud Models)</option>
+                    </select>
+                    <div class="model-info">Choose your preferred AI service provider</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="modelInput">Model Name (Optional)</label>
+                    <input 
+                        type="text" 
+                        id="modelInput" 
+                        placeholder="e.g., gemma3, llama3, gpt-4o-mini"
+                        value="gemma3">
+                    <div class="model-info">Leave empty to use default model</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="filePathInput">File Path (for Apply)</label>
+                    <input 
+                        type="text" 
+                        id="filePathInput" 
+                        placeholder="e.g., index.html, src/app.js">
+                    <div class="model-info">Relative path for file operations</div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn-primary" id="suggestBtn">
+                        🤖 Suggest
+                    </button>
+                    <button class="btn-success" id="explainBtn">
+                        🔍 Explain
+                    </button>
+                    <button class="btn-warning" id="applyBtn">
+                        ✨ Apply
+                    </button>
+                </div>
+
+                <div class="status-indicator" id="statusIndicator" style="display: none;">
+                    <span id="statusText"></span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="section-title">Quick Instructions</h3>
+                <div class="instructions">
+                    <ol>
+                        <li>Ensure AI assistant server is running</li>
+                        <li>Type commands in the console (e.g., 'suggest', 'explain')</li>
+                        <li>Use 'help' to see all available commands</li>
+                        <li>For file operations, set file path in settings</li>
+                        <li>Deep integration with CoffeeCup HTML Editor</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="section-title">Console Commands</h3>
+                <div class="instructions">
+                    <ul>
+                        <li><strong>suggest [code]</strong> - Get code improvements</li>
+                        <li><strong>explain [code]</strong> - Get code explanations</li>
+                        <li><strong>apply [code]</strong> - Apply changes to file</li>
+                        <li><strong>models</strong> - List available models</li>
+                        <li><strong>clear</strong> - Clear console output</li>
+                        <li><strong>help</strong> - Show this help</li>
+                        <li><strong>exit</strong> - Exit console</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isProcessing = false;
+        let commandHistory = [];
+        let historyIndex = -1;
+
+        function showStatus(message, type = 'loading') {
+            const indicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
+            
+            statusText.textContent = message;
+            indicator.className = 'status-indicator';
+            indicator.classList.add(type);
+            indicator.style.display = 'flex';
+        }
+
+        function hideStatus() {
+            document.getElementById('statusIndicator').style.display = 'none';
+        }
+
+        function addToConsole(type, content) {
+            const consoleOutput = document.getElementById('consoleOutput');
+            const line = document.createElement('div');
+            line.className = 'console-line';
+            
+            switch(type) {
+                case 'prompt':
+                    line.innerHTML = `<span class="console-prompt">CoffeeCup-AI-Assistant$</span> <span class="console-command">${content}</span>`;
+                    break;
+                case 'response':
+                    line.innerHTML = `<span class="console-response">${content}</span>`;
+                    break;
+                case 'error':
+                    line.innerHTML = `<span class="console-error">${content}</span>`;
+                    break;
+                default:
+                    line.textContent = content;
+            }
+            
+            consoleOutput.appendChild(line);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+            commandHistory.push({ type, content });
+        }
+
+        async function callAssistant(action, prompt = '') {
+            if (isProcessing) return;
+            
+            const backend = document.getElementById('backendSelector').value;
+            const model = document.getElementById('modelInput').value.trim() || undefined;
+            const filePath = document.getElementById('filePathInput').value.trim() || undefined;
+
+            if (!prompt && action !== 'apply' && action !== 'models') {
+                addToConsole('error', 'Error: Missing prompt');
+                return;
+            }
+
+            if (action === 'apply' && !filePath) {
+                if (!confirm('No file path provided. Proceed without writing file?')) {
+                    return;
+                }
+            }
+
+            isProcessing = true;
+            const actionText = {
+                'suggest': 'Suggesting improvements...',
+                'explain': 'Analyzing code...',
+                'apply': 'Applying changes...',
+                'models': 'Fetching models...'
+            }[action] || `Executing ${action}...`;
+            
+            addToConsole('response', actionText);
+            showStatus(actionText, 'loading');
+
+            try {
+                let response;
+                if (action === 'models') {
+                    response = await fetch('http://localhost:3690/api/models', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    });
+                } else {
+                    response = await fetch('http://localhost:3690/api/assistant', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            backend,
+                            model,
+                            action,
+                            prompt,
+                            filePath
+                        })
+                    });
+                }
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                addToConsole('response', data.text || JSON.stringify(data, null, 2));
+                showStatus('Success!', 'success');
+                setTimeout(hideStatus, 600000);
+
+            } catch (error) {
+                console.error('API Error:', error);
+                const errorMessage = error.message.includes('ECONNREFUSED') || error.message.includes('Failed to fetch') 
+                    ? 'Server connection failed. Make sure the server is running on http://localhost:3690' 
+                    : error.message;
+                addToConsole('error', `Error: ${errorMessage}`);
+                showStatus('Request failed', 'error');
+                setTimeout(hideStatus, 900000);
+            } finally {
+                isProcessing = false;
+            }
+        }
+
+        function handleConsoleCommand(input) {
+            const command = input.trim();
+            if (!command) return;
+
+            addToConsole('prompt', command);
+            
+            // Parse command and arguments
+            const parts = command.split(' ');
+            const cmd = parts[0].toLowerCase();
+            const args = parts.slice(1).join(' ');
+
+            switch(cmd) {
+                case 'suggest':
+                    if (args) {
+                        callAssistant('suggest', args);
+                    } else {
+                        addToConsole('error', 'Usage: suggest [code]');
+                    }
+                    break;
+                    
+                case 'explain':
+                    if (args) {
+                        callAssistant('explain', args);
+                    } else {
+                        addToConsole('error', 'Usage: explain [code]');
+                    }
+                    break;
+                    
+                case 'apply':
+                    if (args) {
+                        callAssistant('apply', args);
+                    } else {
+                        addToConsole('error', 'Usage: apply [code]');
+                    }
+                    break;
+                    
+                case 'models':
+                    callAssistant('models');
+                    break;
+                    
+                case 'clear':
+                    document.getElementById('consoleOutput').innerHTML = '';
+                    addToConsole('response', 'Console cleared.');
+                    break;
+                    
+                case 'help':
+                    addToConsole('response', 'Available commands:');
+                    addToConsole('response', '  suggest [code] - Get code improvements');
+                    addToConsole('response', '  explain [code] - Get code explanations');
+                    addToConsole('response', '  apply [code] - Apply changes to file');
+                    addToConsole('response', '  models - List available models');
+                    addToConsole('response', '  clear - Clear console output');
+                    addToConsole('response', '  help - Show this help');
+                    addToConsole('response', '  exit - Exit console');
+                    break;
+                    
+                case 'exit':
+                    addToConsole('response', 'Exiting console...');
+                    setTimeout(() => {
+                        window.close();
+                    }, 1000);
+                    break;
+                    
+                default:
+                    addToConsole('error', `Command not found: ${cmd}. Type 'help' for available commands.`);
+            }
+        }
+
+        // Event listeners
+        document.getElementById('consoleInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const input = this.value;
+                this.value = '';
+                handleConsoleCommand(input);
+            } else if (e.key === 'ArrowUp') {
+                // Command history navigation
+                if (commandHistory.length > 0) {
+                    if (historyIndex === -1) {
+                        historyIndex = commandHistory.length - 1;
+                    } else if (historyIndex > 0) {
+                        historyIndex--;
+                    }
+                    const historyItem = commandHistory[historyIndex];
+                    if (historyItem && historyItem.type === 'prompt') {
+                        this.value = historyItem.content;
+                    }
+                }
+            } else if (e.key === 'ArrowDown') {
+                if (historyIndex !== -1) {
+                    if (historyIndex < commandHistory.length - 1) {
+                        historyIndex++;
+                        const historyItem = commandHistory[historyIndex];
+                        if (historyItem && historyItem.type === 'prompt') {
+                            this.value = historyItem.content;
+                        }
+                    } else {
+                        historyIndex = -1;
+                        this.value = '';
+                    }
+                }
+            }
+        });
+
+        document.getElementById('suggestBtn').addEventListener('click', () => {
+            const consoleInput = document.getElementById('consoleInput');
+            if (consoleInput.value.trim()) {
+                handleConsoleCommand(`suggest ${consoleInput.value.trim()}`);
+            } else {
+                // Get code from a textarea or editor if available
+                const code = document.querySelector('textarea')?.value || '// No code selected';
+                handleConsoleCommand(`suggest ${code}`);
+            }
+        });
+
+        document.getElementById('explainBtn').addEventListener('click', () => {
+            const consoleInput = document.getElementById('consoleInput');
+            if (consoleInput.value.trim()) {
+                handleConsoleCommand(`explain ${consoleInput.value.trim()}`);
+            } else {
+                // Get code from a textarea or editor if available
+                const code = document.querySelector('textarea')?.value || '// No code selected';
+                handleConsoleCommand(`explain ${code}`);
+            }
+        });
+
+        document.getElementById('applyBtn').addEventListener('click', () => {
+            const consoleInput = document.getElementById('consoleInput');
+            if (consoleInput.value.trim()) {
+                handleConsoleCommand(`apply ${consoleInput.value.trim()}`);
+            } else {
+                // Get code from a textarea or editor if available
+                const code = document.querySelector('textarea')?.value || '// No code selected';
+                handleConsoleCommand(`apply ${code}`);
+            }
+        });
+
+        // Focus console input on load
+        window.addEventListener('load', () => {
+            document.getElementById('consoleInput').focus();
+        });
+    </script>
+    
+    <!-- Footer -->
+    <footer class="footer" style="
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(135deg, rgba(79,140,255,.15), rgba(79,140,255,.05));
+        border-top: 1px solid var(--border);
+        padding: 12px;
+        text-align: center;
+        font-size: 12px;
+        color: var(--muted);
+        z-index: 1000;
+    ">
+        <p>
+            Developed by Siyabonga B Phakathi of The Voice & Eye of Bhambatha Inc.
+            <br>
+            <a href="https://www.bhambathatablog.wordpress.com" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: none;">Blog</a> |
+            <a href="https://www.facebook.com/C.Datoxic.P" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: none;">Facebook</a> |
+            <a href="https://www.websim.com/@whisperinggalaxyd" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: none;">WebSim</a> |
+            <a href="https://www.github.com/datoxic0" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: none;">GitHub</a> |
+            <a href="https://discord.com/channels/datoxic0" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: none;">Discord</a> |
+            <a href="https://x.com/Siya_B_Phakathi" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: none;">X</a>
+        </p>
+    </footer>
+</body>
+</html>

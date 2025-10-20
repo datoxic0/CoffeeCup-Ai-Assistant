@@ -1,0 +1,32 @@
+{
+  "name": "coffee-cup-ai-assistant",
+  "version": "1.0.0",
+  "description": "AI assistant for CoffeeCup HTML Editor with Ollama and OpenRouter support",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "node-fetch": "^3.3.2",
+    "uuid": "^13.0.0",
+    "ws": "^8.18.3"
+  },
+  "keywords": [
+    "coffee-cup",
+    "free-html-editor",
+    "ai",
+    "assistant",
+    "html-editor",
+    "html-css-javascript",
+    "ollama",
+    "openrouter",
+    "free-opensource"
+  ],
+  "author": "Siyabonga B Phakathi - The Voice and Eye of Bhambatha Inc.",
+  "license": "VOICE & EYE SOURCE-AVAILABLE NONCOMMERCIAL + COMMERCIAL-LICENSE (VEO-SA-NC-1.0)"
+}

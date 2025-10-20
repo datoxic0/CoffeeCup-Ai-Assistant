@@ -1,0 +1,24 @@
+{
+  "universal": {
+    "qualityPolicy": "zeroWarningsZeroErrors",
+    "onFail": "regenerateAndRetry",
+    "maxRetries": 6,
+    "preventCommitOnError": true,
+    "enforceTests": true,
+    "reportTools": ["SonarQube", "CodeQL", "gitleaks"]
+  },
+  "languages": {
+    "javascript": {
+      "formatter": ["prettier"],
+      "linters": ["eslint"],
+      "typeCheckers": ["tsc"],
+      "preCommit": ["husky"],
+      "tests": ["jest"]
+    },
+    "htmlCss": {
+      "formatter": ["prettier"],
+      "linters": ["stylelint", "htmlhint"],
+      "accessibility": ["axe-core"]
+    }
+  }
+}

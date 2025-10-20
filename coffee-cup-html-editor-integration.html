@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoffeeCup HTML Editor AI Assistant</title>
+    <link rel="stylesheet" href="unified-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="dark-theme">
+    <div id="app-container">
+        <aside id="settings-panel">
+            <div class="settings-header">
+                <h2><i class="fas fa-cog"></i> CoffeeCup Settings</h2>
+                <div>
+                    <button id="theme-toggle" class="icon-btn" title="Toggle Theme">
+                        <i class="fas fa-sun"></i>
+                    </button>
+                    <button id="sidebar-toggle" class="icon-btn" title="Toggle Sidebar">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="settings-content">
+                <div class="setting-item">
+                    <label for="backend-select"><i class="fas fa-server"></i> AI Backend</label>
+                    <select id="backend-select">
+                        <option value="ollama">Ollama (Local)</option>
+                        <option value="openrouter">OpenRouter (Cloud)</option>
+                        <option value="websim">Websim AI (Cloud)</option>
+                    </select>
+                </div>
+                <div class="setting-item" id="model-input-container">
+                    <label for="model-select"><i class="fas fa-brain"></i> Model Name</label>
+                    <div class="input-with-icon">
+                        <select id="model-select"></select>
+                        <button id="refresh-models" class="icon-btn refresh-btn" title="Refresh Models"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                    <small>If empty, server default will be used.</small>
+                </div>
+                <div class="setting-item" id="websim-key-container">
+                    <label for="websim-key-input"><i class="fas fa-key"></i> Websim API Key</label>
+                    <input type="password" id="websim-key-input" placeholder="Enter your Websim key">
+                    <small>Required for the Websim backend.</small>
+                </div>
+                <div class="setting-item">
+                    <label for="filepath-select"><i class="fas fa-file-alt"></i> Current File</label>
+                     <div class="input-with-icon">
+                        <select id="filepath-select"></select>
+                        <button id="refresh-files" class="icon-btn refresh-btn" title="Refresh Files"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                     <small>File to work with in CoffeeCup Editor.</small>
+                </div>
+                <div class="setting-item">
+                    <label for="server-url-input"><i class="fas fa-link"></i> Server URL</label>
+                    <input type="text" id="server-url-input" value="http://localhost:3690" placeholder="e.g., http://localhost:3690">
+                    <small>The URL of your local backend server.</small>
+                </div>
+                <div class="setting-item">
+                    <label><i class="fas fa-network-wired"></i> Connection Status</label>
+                    <div id="status-indicators">
+                        <div class="status-item"><span>Server</span><span class="status-dot" id="status-server"></span></div>
+                        <div class="status-item"><span>Ollama</span><span class="status-dot" id="status-ollama"></span></div>
+                        <div class="status-item"><span>OpenRouter API</span><span class="status-dot" id="status-openrouter"></span></div>
+                        <div class="status-item"><span>Websim</span><span class="status-dot" id="status-websim"></span></div>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <label><i class="fas fa-magic"></i> CoffeeCup Features</label>
+                    <div class="coffee-cup-features">
+                        <button id="components-btn" class="feature-btn" title="Access Components Library">
+                            <i class="fas fa-puzzle-piece"></i> Components
+                        </button>
+                        <button id="preview-btn" class="feature-btn" title="Live Preview">
+                            <i class="fas fa-eye"></i> Live Preview
+                        </button>
+                        <button id="publish-btn" class="feature-btn" title="Publish to S-Drive">
+                            <i class="fas fa-cloud-upload-alt"></i> Publish
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <footer>
+                <p>Powered by The Voice and Eye of Bhambatha Inc.</p>
+            </footer>
+        </aside>
+        <div id="resize-handle"></div>
+        <div id="main-content">
+            <header>
+                <button id="sidebar-toggle-main" class="icon-btn" title="Toggle Sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1>CoffeeCup HTML Editor AI Assistant</h1>
+                <button id="view-toggle" class="icon-btn" title="Switch to Terminal View">
+                    <i class="fas fa-terminal"></i>
+                </button>
+            </header>
+            <div id="view-wrapper">
+                <main id="chat-container">
+                    <div id="message-list">
+                         <div class="message assistant">
+                            <div class="message-content">
+                                <p>Welcome to the CoffeeCup HTML Editor AI Assistant! This interface is optimized for CoffeeCup Software workflows. Use commands like <code>/suggest</code>, <code>/explain</code>, or type <code>/help</code> for more options.</p>
+                                <p><strong>CoffeeCup Integration Features:</strong></p>
+                                <ul>
+                                    <li>Tag Highlighting: Quick find open/close tags</li>
+                                    <li>Components Library: Access pre-built components</li>
+                                    <li>Live Preview: Real-time code changes</li>
+                                    <li>Publish Anywhere: Built-in FTP uploader</li>
+                                </ul>
+                            </div>
+                        </div>
+                    <div id="input-area">
+                        <div id="input-wrapper">
+                            <textarea id="prompt-input" placeholder="Enter HTML/CSS/JavaScript code or ask about CoffeeCup features..." rows="1"></textarea>
+                            <button id="btn-send" title="Send Message"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                        <div id="action-buttons">
+                            <button id="btn-suggest" data-action="suggest"><i class="fas fa-lightbulb"></i> Suggest Fix</button>
+                            <button id="btn-explain" data-action="explain"><i class="fas fa-comment-dots"></i> Explain Code</button>
+                            <button id="btn-components" data-action="components"><i class="fas fa-puzzle-piece"></i> Component Help</button>
+                        </div>
+                    </div>
+                </main>
+                <main id="terminal-container" class="hidden">
+                    <div id="terminal-output"></div>
+                    <div id="terminal-input-area">
+                        <label for="terminal-input" class="terminal-prompt">></label>
+                        <input type="text" id="terminal-input" placeholder="Type a command... (e.g., /help)" autocomplete="off">
+                    </div>
+                </main>
+            </div>
+        </div>
+        
+    <script type="importmap">
+    {
+        "imports": {
+            "marked": "https://cdn.jsdelivr.net/npm/marked@12.0.2/lib/marked.esm.js",
+            "highlight.js": "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/es/highlight.min.js"
+        }
+    }
+    </script>
+    <script type="module" src="script.js"></script>
+    <script>
+        // Register the service worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+
+        // CoffeeCup-specific functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add event listeners for CoffeeCup features
+            document.getElementById('components-btn').addEventListener('click', () => {
+                alert('Components Library: This would integrate with CoffeeCup\'s Components Library to insert pre-built components.');
+            });
+            
+            document.getElementById('preview-btn').addEventListener('click', () => {
+                alert('Live Preview: This would trigger CoffeeCup\'s Live Preview functionality to show changes in real-time.');
+            });
+            
+            document.getElementById('publish-btn').addEventListener('click', () => {
+                alert('Publish to S-Drive: This would use CoffeeCup\'s built-in FTP uploader to publish your project.');
+            });
+            
+            // Special CoffeeCup action button
+            document.getElementById('btn-components').addEventListener('click', () => {
+                const prompt = document.getElementById('prompt-input').value.trim();
+                if (!prompt) {
+                    alert('Please enter a description of the component you need.');
+                    return;
+                }
+                
+                // Add message to chat
+                const messageText = `Requesting component: ${prompt}`;
+                window.addMessageToChat(messageText, 'user');
+                
+                // Call AI with component-specific context
+                fetch(`${window.API_BASE_URL || 'http://localhost:3690'}/api/assistant`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        backend: document.getElementById('backend-select').value,
+                        model: document.getElementById('model-select').value.trim(),
+                        action: 'suggest',
+                        prompt: `Create an HTML component based on this description: ${prompt}. Provide clean, semantic HTML with proper CSS styling that follows CoffeeCup HTML Editor best practices. Include any necessary JavaScript functionality. Format as a reusable component.`,
+                        filePath: document.getElementById('filepath-select').value.trim(),
+                        keys: {
+                            websim: document.getElementById('websim-key-input').value.trim()
+                        }
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    window.addMessageToChat(data.text, 'assistant');
+                })
+                .catch(error => {
+                    window.addMessageToChat(`Error: ${error.message}`, 'error');
+                });
+            });
+            
+            // Add global function for chat messages (for use in other parts of the app)
+            window.addMessageToChat = function(text, type) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${type}`;
+
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'message-content';
+                
+                // Use marked to parse markdown
+                contentDiv.innerHTML = marked.parse(text, {
+                    highlight: (code, lang) => {
+                        const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+                        return hljs.highlight(code, { language }).value;
+                    },
+                    gfm: true,
+                });
+                
+                messageDiv.appendChild(contentDiv);
+
+                document.getElementById('message-list').appendChild(messageDiv);
+                document.getElementById('message-list').scrollTop = document.getElementById('message-list').scrollHeight;
+                return messageDiv;
+            };
+        });
+    </script>
+</body>
+</html>
